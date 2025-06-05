@@ -1,310 +1,96 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>متجر الألعاب والاشتراكات</title>
-<style>
-  body {
-    margin:0; padding:0; font-family: Arial, sans-serif;
-    background: #f0f4ff;
-    color: #003366;
-  }
-  header {
-    background: #005bbb;
-    padding: 15px;
-    text-align: center;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  #products {
-    max-width: 900px;
-    margin: 20px auto;
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  }
-  .product {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
-    text-align: center;
-  }
-  .product img {
-    max-width: 100%;
-    border-radius: 6px;
-  }
-  .price {
-    color: #0077ff;
-    font-weight: bold;
-    margin: 10px 0;
-    font-size: 18px;
-  }
-  #payment-methods {
-    max-width: 900px;
-    margin: 30px auto;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-  }
-  .pay-icon {
-    width: 100px;
-    opacity: 0.8;
-    filter: drop-shadow(0 0 1px rgba(0,0,0,0.2));
-  }
-  #support {
-    max-width: 900px;
-    margin: 20px auto;
-    background: #e0ebff;
-    padding: 15px;
-    border-radius: 6px;
-    text-align: center;
-    font-size: 16px;
-  }
-  /* لوحة التحكم مخفية */
-  #adminPanel {
-    display: none;
-    max-width: 600px;
-    margin: 30px auto;
-    background: #dbe8ff;
-    border-radius: 8px;
-    padding: 20px;
-  }
-  #adminPanel h2 {
-    margin-top: 0;
-    color: #003366;
-  }
-  #adminPanel label {
-    display: block;
-    margin: 10px 0 5px;
-  }
-  #adminPanel input[type="text"], #adminPanel input[type="number"], #adminPanel input[type="url"] {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  #adminPanel button {
-    margin-top: 15px;
-    background: #005bbb;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  #adminPanel button:hover {
-    background: #004a99;
-  }
-  #loginPanel {
-    max-width: 300px;
-    margin: 40px auto;
-    background: #dbe8ff;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-  }
-  #loginPanel input[type="password"] {
-    width: 80%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    font-size: 16px;
-  }
-  #loginPanel button {
-    background: #005bbb;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  #loginPanel button:hover {
-    background: #004a99;
-  }
-  /* زر لوحة التحكم */
-  #adminToggle {
-    position: fixed;
-    bottom: 15px;
-    left: 15px;
-    background: #005bbb;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 30px;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.3s;
-    font-weight: bold;
-    z-index: 9999;
-  }
-  #adminToggle:hover {
-    opacity: 1;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrossPlay Store</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
+      authDomain: "crossplay-store.firebaseapp.com",
+      databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
+      projectId: "crossplay-store",
+      storageBucket: "crossplay-store.firebasestorage.app",
+      messagingSenderId: "918790495368",
+      appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const productList = document.getElementById("products");
+
+    const productsRef = ref(db, "products/");
+    onValue(productsRef, (snapshot) => {
+      productList.innerHTML = "";
+      snapshot.forEach((child) => {
+        const data = child.val();
+        const item = document.createElement("div");
+        item.className = "product";
+        item.innerHTML = `
+          <img src="${data.image}" alt="${data.title}" />
+          <h3>${data.title}</h3>
+          <p>السعر: ${data.price} ريال</p>
+          <p>الدفع: ${data.payment}</p>
+        `;
+        productList.appendChild(item);
+      });
+    });
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #d32f2f;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    h1 {
+      margin: 0;
+    }
+    .slogan {
+      background-color: #fdd835;
+      color: #000;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+    #products {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+    .product {
+      background-color: #222;
+      border: 2px solid #fdd835;
+      border-radius: 10px;
+      padding: 15px;
+      width: 200px;
+      text-align: center;
+    }
+    .product img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
-
-<header>متجر الألعاب والاشتراكات - كل شيء في مكان واحد</header>
-
-<section id="products"></section>
-
-<section id="payment-methods">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/STC_Logo.svg/120px-STC_Logo.svg.png" alt="STC Pay" class="pay-icon" />
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Mada_Network_Logo.svg/120px-Mada_Network_Logo.svg.png" alt="مدى" class="pay-icon" />
-</section>
-
-<section id="support">
-  دعم فني: <span id="supportPhone">0500000000</span>
-</section>
-
-<button id="adminToggle">لوحة التحكم</button>
-
-<!-- صفحة تسجيل الدخول للوحة التحكم -->
-<div id="loginPanel" style="display:none;">
-  <input type="password" id="adminPass" placeholder="أدخل كلمة المرور" />
-  <br />
-  <button id="loginBtn">دخول</button>
-  <p id="loginMsg" style="color:red;"></p>
-</div>
-
-<!-- لوحة التحكم -->
-<div id="adminPanel">
-  <h2>لوحة التحكم</h2>
-  <div id="productsAdmin"></div>
-
-  <label for="supportInput">رقم الدعم الفني</label>
-  <input type="text" id="supportInput" />
-
-  <button id="saveBtn">حفظ التعديلات</button>
-</div>
-
-<script>
-  // بيانات مبدئية للمنتجات (تقدر تعدل هنا بسهولة)
-  let productsData = [
-    {
-      id:1,
-      name:"بطاقة Steam بقيمة 50 ريال",
-      price:50,
-      img:"https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans/27182528/859a52b8e5b3b9e7c2a007010bb60a06af006e39.png"
-    },
-    {
-      id:2,
-      name:"اشتراك Xbox Game Pass",
-      price:100,
-      img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Xbox_Game_Pass_logo.svg/256px-Xbox_Game_Pass_logo.svg.png"
-    },
-    {
-      id:3,
-      name:"لعبة Fortnite",
-      price:150,
-      img:"https://cdn2.unrealengine.com/fortnite-418x418-293b09a9fb0e.png"
-    }
-  ];
-
-  // عرض المنتجات في الصفحة الرئيسية
-  function renderProducts(){
-    const container = document.getElementById("products");
-    container.innerHTML = "";
-    productsData.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "product";
-      card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}" />
-        <h3>${p.name}</h3>
-        <div class="price">${p.price} ريال</div>
-      `;
-      container.appendChild(card);
-    });
-  }
-  renderProducts();
-
-  // عرض المنتجات في لوحة التحكم مع حقول تعديل
-  function renderAdminProducts(){
-    const adminDiv = document.getElementById("productsAdmin");
-    adminDiv.innerHTML = "";
-    productsData.forEach(p => {
-      const productHtml = `
-        <label>اسم المنتج #${p.id}</label>
-        <input type="text" data-id="${p.id}" class="adminName" value="${p.name}" />
-        <label>السعر (ريال)</label>
-        <input type="number" data-id="${p.id}" class="adminPrice" value="${p.price}" />
-        <label>رابط الصورة</label>
-        <input type="url" data-id="${p.id}" class="adminImg" value="${p.img}" />
-        <hr />
-      `;
-      adminDiv.insertAdjacentHTML("beforeend", productHtml);
-    });
-    // رقم الدعم الفني
-    document.getElementById("supportInput").value = document.getElementById("supportPhone").textContent;
-  }
-
-  // حفظ التعديلات من لوحة التحكم
-  document.getElementById("saveBtn").addEventListener("click", () => {
-    // تعديل المنتجات
-    const names = document.querySelectorAll(".adminName");
-    const prices = document.querySelectorAll(".adminPrice");
-    const imgs = document.querySelectorAll(".adminImg");
-    names.forEach(input => {
-      const id = input.dataset.id;
-      const product = productsData.find(p => p.id == id);
-      if(product) product.name = input.value;
-    });
-    prices.forEach(input => {
-      const id = input.dataset.id;
-      const product = productsData.find(p => p.id == id);
-      if(product) product.price = Number(input.value);
-    });
-    imgs.forEach(input => {
-      const id = input.dataset.id;
-      const product = productsData.find(p => p.id == id);
-      if(product) product.img = input.value;
-    });
-    // تعديل رقم الدعم الفني
-    const supportVal = document.getElementById("supportInput").value;
-    document.getElementById("supportPhone").textContent = supportVal;
-
-    // إعادة عرض المنتجات بعد التعديل
-    renderProducts();
-    alert("تم حفظ التعديلات بنجاح!");
-  });
-
-  // زر فتح وإغلاق لوحة التحكم
-  const adminToggle = document.getElementById("adminToggle");
-  const loginPanel = document.getElementById("loginPanel");
-  const adminPanel = document.getElementById("adminPanel");
-  const loginBtn = document.getElementById("loginBtn");
-  const adminPassInput = document.getElementById("adminPass");
-  const loginMsg = document.getElementById("loginMsg");
-
-  adminToggle.addEventListener("click", () => {
-    if (adminPanel.style.display === "block") {
-      adminPanel.style.display = "none";
-      loginPanel.style.display = "none";
-    } else {
-      loginPanel.style.display = "block";
-      adminPassInput.value = "";
-      loginMsg.textContent = "";
-      adminPanel.style.display = "none";
-    }
-  });
-
-  // تحقق كلمة المرور (مخزنة هنا فقط لأغراض البساطة)
-  const ADMIN_PASSWORD = "1234"; // غيرها لكلمة مرور قوية تبيها
-
-  loginBtn.addEventListener("click", () => {
-    if(adminPassInput.value === ADMIN_PASSWORD){
-      loginPanel.style.display = "none";
-      adminPanel.style.display = "block";
-      renderAdminProducts();
-    } else {
-      loginMsg.textContent = "كلمة المرور خاطئة!";
-    }
-  });
-</script>
-
+  <header>
+    <h1>🎮 CrossPlay Store</h1>
+  </header>
+  <div class="slogan">كل شيء في مكان واحد</div>
+  <div id="products"></div>
 </body>
 </html>
