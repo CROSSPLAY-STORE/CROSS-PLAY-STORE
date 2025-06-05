@@ -1,0 +1,85 @@
+<!-- index.html - صفحة المتجر -->
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrossPlay Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #d32f2f; /* أحمر */
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 2rem;
+    }
+    .product {
+      border: 2px solid #ffeb3b; /* أصفر */
+      border-radius: 8px;
+      padding: 1rem;
+      background-color: #000; /* أسود */
+      color: #fff;
+      text-align: center;
+    }
+    .product img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>كل شيء في مكان واحد - CrossPlay Store</h1>
+  </header>
+  <div class="product-list" id="product-list"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
+      authDomain: "crossplay-store.firebaseapp.com",
+      databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
+      projectId: "crossplay-store",
+      storageBucket: "crossplay-store.appspot.com",
+      messagingSenderId: "918790495368",
+      appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const productList = document.getElementById("product-list");
+    const productsRef = ref(db, "products");
+
+    onValue(productsRef, (snapshot) => {
+      productList.innerHTML = "";
+      const data = snapshot.val();
+      for (let id in data) {
+        const product = data[id];
+        productList.innerHTML += `
+          <div class="product">
+            <img src="${product.imageURL}" alt="${product.name}" />
+            <h3>${product.name}</h3>
+            <p>السعر: ${product.price} ريال</p>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
