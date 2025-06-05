@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrossPlay Store Admin</title>
+  <script type="module">
+    // Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
+      authDomain: "crossplay-store.firebaseapp.com",
+      databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
+      projectId: "crossplay-store",
+      storageBucket: "crossplay-store.firebasestorage.app",
+      messagingSenderId: "918790495368",
+      appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const form = document.getElementById("product-form");
+    const productList = document.getElementById("product-list");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = form.title.value;
+      const price = form.price.value;
+      const image = form.image.value;
+      const payment = form.payment.value;
+
+      push(ref(db, "products/"), { title, price, image, payment });
+      form.reset();
+    });
+
+    function loadProducts() {
+      const productsRef = ref(db, "products/");
+      onValue(productsRef, (snapshot) => {
+        productList.innerHTML = "";
+        snapshot.forEach((child) => {
+          const data = child.val();
+          const item = document.createElement("div");
+          item.innerHTML = `
+            <div style="padding: 10px; border: 1px solid #ccc; margin: 5px;">
+              <img src="${data.image}" width="100" /><br />
+              <strong>${data.title}</strong><br />
+              السعر: ${data.price} ريال<br />
+              الدفع: ${data.payment}<br />
+              <button onclick="deleteProduct('${child.key}')">حذف</button>
+            </div>
+          `;
+          productList.appendChild(item);
+        });
+      });
+    }
+
+    window.deleteProduct = function (id) {
+      remove(ref(db, `products/${id}`));
+    };
+
+    loadProducts();
+  </script>
+</head>
+<body style="font-family: sans-serif; background: #f9f9f9; padding: 20px;">
+  <h2>لوحة تحكم CrossPlay Store</h2>
+  <form id="product-form">
+    <input type="text" name="title" placeholder="اسم المنتج" required />
+    <input type="text" name="price" placeholder="السعر" required />
+    <input type="text" name="image" placeholder="رابط الصورة" required />
+    <select name="payment">
+      <option>STC Pay</option>
+      <option>مدى</option>
+      <option>فيزا</option>
+    </select>
+    <button type="submit">إضافة</button>
+  </form>
+  <hr />
+  <div id="product-list"></div>
+</body>
+</html>
