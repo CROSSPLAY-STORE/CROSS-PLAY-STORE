@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة التحكم</title>
+  <style>
+    body { font-family: Tahoma; direction: rtl; text-align: center; padding: 40px; background-color: #f0f8ff; }
+    #admin-content { display: none; margin-top: 30px; }
+    input, button { padding: 10px; font-size: 16px; margin: 5px; }
+  </style>
+</head>
+<body>
+
+  <h2>تسجيل دخول لوحة التحكم</h2>
+  <input type="password" id="password" placeholder="كلمة المرور"><br>
+  <button onclick="checkPassword()">دخول</button>
+
+  <div id="admin-content">
+    <h3>مرحبًا بك يا أبوبكر! 👨‍✈️</h3>
+    <p>هنا تقدر تعدل الأسعار، تضيف منتجات، وتتحكم بكل شيء.</p>
+    <!-- أضف عناصر التحكم هنا -->
+  </div>
+
+  <script>
+    function checkPassword() {
+      const pass = document.getElementById("password").value;
+      if (pass === "abubakr123") {
+        document.getElementById("admin-content").style.display = "block";
+      } else {
+        alert("كلمة المرور خاطئة. حاول مرة ثانية.");
+      }
+    }
+  </script>
+
+</body>
+</html>
