@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CrossPlay Store - تسجيل الدخول وإنشاء حساب</title>
+<style>
+  body {
+    background: white;
+    color: #003366;
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    font-size: 16px;
+  }
+  button {
+    background: #003366;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  button:hover {
+    background: #0055aa;
+    transform: scale(1.05);
+  }
+  .link {
+    color: #003366;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 10px;
+    display: inline-block;
+  }
+  #errorMsg, #verifyErrorMsg {
+    color: red;
+    font-weight: bold;
+    margin: 8px 0;
+  }
+  .user-emoji {
+    font-size: 24px;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 10px;
+  }
+  .tooltip {
+    visibility: hidden;
+    background-color: #003366;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 4px 8px;
+    position: absolute;
+    z-index: 1;
+    margin-top: 5px;
+    font-size: 14px;
+    right: 0;
+  }
+  .user-emoji:hover .tooltip {
+    visibility: visible;
+  }
+</style>
+</head>
+<body>
+
+<h2>إنشاء حساب / تسجيل الدخول</h2>
+
+<div id="registerForm">
+  <input type="text" id="username" placeholder="اسم المستخدم" required />
+  <input type="email" id="email" placeholder="البريد الإلكتروني" required />
+  <input type="password" id="password" placeholder="كلمة المرور" required />
+  <input type="password" id="passwordConfirm" placeholder="تأكيد كلمة المرور" required />
+  <button id="registerBtn">إنشاء حساب / تسجيل الدخول</button>
+  <div id="errorMsg"></div>
+</div>
+
+<div id="verifyForm" style="display:none;">
+  <p style="opacity:0.5;">ادخل الرمز المرسل لبريدك الإلكتروني</p>
+  <input type="text" id="verificationCode" placeholder="رمز التحقق" maxlength="6" />
+  <button id="verifyBtn">تأكيد الرمز</button>
+  <span class="link" id="editEmailLink">← تعديل البريد الإلكتروني</span>
+  <div id="verifyErrorMsg"></div>
+</div>
+
+<div id="userEmoji" class="user-emoji" style="display:none;">
+  😊
+  <div class="tooltip" id="tooltipUsername"></div>
+</div>
+
+<script>
+  const registerForm = document.getElementById('registerForm');
+  const verifyForm = document.getElementById('verifyForm');
+  const registerBtn = document.getElementById('registerBtn');
+  const verifyBtn = document.getElementById('verifyBtn');
+  const editEmailLink = document.getElementById('editEmailLink');
+  const errorMsg = document.getElementById('errorMsg');
+  const verifyErrorMsg = document.getElementById('verifyErrorMsg');
+  const userEmoji = document.getElementById('userEmoji');
+  const tooltipUsername = document.getElementById('tooltipUsername');
+
+  let currentEmail = '';
+  let currentUsername = '';
+  let currentPassword = '';
+  let generatedCode = '';
+
+  function validateRegister() {
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+    if (!username || !email || !password || !passwordConfirm) {
+      errorMsg.textContent = 'يرجى ملء جميع الحقول.';
+      return false;
+    }
+    if (password !== passwordConfirm) {
+      errorMsg.textContent = 'كلمتا المرور غير متطابقتين.';
+      return false;
+    }
+    errorMsg.textContent = '';
+    return { username, email, password };
+  }
+
+  registerBtn.onclick = async () => {
+    const valid = validateRegister();
+    if (!valid) return;
+
+    currentUsername = valid.username;
+    currentEmail = valid.email;
+    currentPassword = valid.password;
+
+    try {
+      const response = await fetch('/sendVerificationCode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail })
+      });
+      const data = await response.json();
+      if (data.success) {
+        generatedCode = data.code; // فقط للاختبار، لا ترسل الرمز للعميل في الإنتاج
+        registerForm.style.display = 'none';
+        verifyForm.style.display = 'block';
+      } else {
+        errorMsg.textContent = data.message || 'خطأ في إرسال الرمز.';
+      }
+    } catch (e) {
+      errorMsg.textContent = 'خطأ في الاتصال بالخادم.';
+    }
+  };
+
+  verifyBtn.onclick = () => {
+    const inputCode = document.getElementById('verificationCode').value.trim();
+    if (inputCode === generatedCode) {
+      verifyErrorMsg.textContent = '';
+      verifyForm.style.display = 'none';
+      userEmoji.style.display = 'inline-block';
+      tooltipUsername.textContent = currentUsername;
+      alert('تم التحقق! حسابك جاهز للاستخدام.');
+      // هنا تضيف تسجيل الدخول أو إعادة توجيه للصفحة الرئيسية
+    } else {
+      verifyErrorMsg.textContent = 'رمز التحقق غير صحيح.';
+    }
+  };
+
+  editEmailLink.onclick = () => {
+    verifyForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    errorMsg.textContent = '';
+    verifyErrorMsg.textContent = '';
+  };
+</script>
+
+</body>
+</html>
