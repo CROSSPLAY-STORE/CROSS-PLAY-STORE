@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول / إنشاء حساب</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <input type="text" placeholder="اسمك" id="username">
+      <input type="email" placeholder="البريد الإلكتروني" id="email">
+      <input type="password" placeholder="كلمة المرور" id="password">
+      <input type="password" placeholder="تأكيد كلمة المرور" id="confirm-password">
+      <button onclick="register()">إنشاء حساب / تسجيل دخول</button>
+    </div>
+  </div>
+
+  <script>
+    function register() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("confirm-password").value;
+      if (password !== confirm) return alert("كلمات المرور غير متطابقة!");
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          alert("تم إنشاء الحساب، تحقق من بريدك الإلكتروني");
+        })
+        .catch((error) => {
+          alert("خطأ: " + error.message);
+        });
+    }
+  </script>
+</body>
+</html>
