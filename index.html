@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrossPlay Store - تسجيل / دخول</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #ffffff, #d0e6ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+    .input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    .button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .button:hover {
+      transform: scale(1.05);
+      background-color: #0056b3;
+    }
+    .link {
+      color: #007bff;
+      cursor: pointer;
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+    }
+    #codeSection {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="registerSection">
+      <input type="text" id="username" class="input" placeholder="اسم المستخدم">
+      <input type="email" id="email" class="input" placeholder="البريد الإلكتروني">
+      <input type="password" id="password" class="input" placeholder="كلمة المرور">
+      <input type="password" id="confirmPassword" class="input" placeholder="تأكيد كلمة المرور">
+      <button class="button" onclick="sendVerificationCode()">إنشاء حساب / تسجيل دخول</button>
+    </div>
+
+    <div id="codeSection">
+      <input type="text" id="verificationCode" class="input" placeholder="ادخل الرمز المرسل لبريدك الإلكتروني">
+      <button class="button" onclick="verifyCode()">تحقق</button>
+      <span class="link" onclick="goBack()">← تعديل البريد الإلكتروني</span>
+    </div>
+  </div>
+
+  <script>
+    function sendVerificationCode() {
+      const email = document.getElementById('email').value;
+      if (!email) {
+        alert('يرجى إدخال البريد الإلكتروني');
+        return;
+      }
+      fetch('http://localhost:3000/sendVerificationCode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('registerSection').style.display = 'none';
+          document.getElementById('codeSection').style.display = 'block';
+        } else {
+          alert('فشل في إرسال الكود');
+        }
+      })
+      .catch(err => alert('خطأ في الاتصال بالسيرفر'));
+    }
+
+    function verifyCode() {
+      const code = document.getElementById('verificationCode').value;
+      const email = document.getElementById('email').value;
+      fetch('http://localhost:3000/verifyCode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('تم التسجيل بنجاح');
+        } else {
+          alert('رمز غير صحيح');
+        }
+      });
+    }
+
+    function goBack() {
+      document.getElementById('registerSection').style.display = 'block';
+      document.getElementById('codeSection').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
