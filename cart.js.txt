@@ -1,0 +1,46 @@
+// cart.js
+
+// تحميل السلة من localStorage
+function loadCart() {
+  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartContainer = document.getElementById("cart-items");
+  const totalPriceEl = document.getElementById("total-price");
+
+  cartContainer.innerHTML = "";
+  let total = 0;
+
+  if (cartItems.length === 0) {
+    cartContainer.innerHTML = `<p class="text-white text-center">السلة فارغة</p>`;
+    totalPriceEl.textContent = "0 ر.س";
+    return;
+  }
+
+  cartItems.forEach((item, index) => {
+    total += parseFloat(item.price);
+    const itemEl = document.createElement("div");
+    itemEl.className = "flex items-center justify-between bg-white p-4 mb-2 rounded-xl shadow-md";
+    itemEl.innerHTML = `
+      <div class="flex items-center">
+        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover mr-4">
+        <div>
+          <p class="font-bold">${item.name}</p>
+          <p class="text-sm text-gray-500">${item.price} ر.س</p>
+        </div>
+      </div>
+      <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">حذف</button>
+    `;
+    cartContainer.appendChild(itemEl);
+  });
+
+  totalPriceEl.textContent = `${total.toFixed(2)} ر.س`;
+}
+
+function removeFromCart(index) {
+  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  cartItems.splice(index, 1);
+  localStorage.setItem("cart", JSON.stringify(cartItems));
+  loadCart();
+}
+
+// عند تحميل الصفحة
+window.addEventListener("load", loadCart);
