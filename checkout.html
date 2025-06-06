@@ -1,50 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إتمام الشراء</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="checkout-page">
-
-  <header>
-    <a href="cart.html" class="back-btn red">⬅️ أرجع</a>
-    <h1>إتمام الشراء</h1>
-  </header>
-
-  <main>
-    <section class="payment-methods">
-      <h2>اختر طريقة الدفع</h2>
-      <div class="payment-options">
-        <label><input type="radio" name="payment" value="mada"> مدى</label>
-        <label><input type="radio" name="payment" value="stc"> STC Pay</label>
-        <label><input type="radio" name="payment" value="apple"> Apple Pay</label>
-        <label><input type="radio" name="payment" value="visa"> Visa/MasterCard</label>
-      </div>
-
-      <button class="complete-btn" onclick="completeOrder()">تأكيد الطلب</button>
-    </section>
-
-    <div id="confirmation-message" class="hidden">✅ تم تنفيذ الطلب بنجاح! تم إرسال إشعار لك.</div>
-  </main>
-
-  <script>
-    function completeOrder() {
-      const selected = document.querySelector('input[name="payment"]:checked');
-      if (!selected) {
-        alert("يرجى اختيار طريقة دفع!");
-        return;
-      }
-
-      // محاكاة تنفيذ الطلب
-      document.getElementById("confirmation-message").classList.remove("hidden");
-
-      // هنا يتم إرسال الإشعار
-      console.log("🔔 إرسال إشعار للمسؤول بتنفيذ الطلب...");
-
-      // يمكنك ربطه بـ Firebase Cloud Messaging لاحقًا
-    }
-  </script>
-</body>
-</html>
