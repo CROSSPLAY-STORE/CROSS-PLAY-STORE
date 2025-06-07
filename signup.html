@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب - CROSS PLAY STORE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .auth-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .auth-container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #000;
+    }
+    .auth-container form {
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-container label {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .auth-container input {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .auth-container button {
+      background-color: #000;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .auth-container button:hover {
+      background-color: #333;
+    }
+    .auth-switch {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .auth-switch a {
+      color: #000;
+      text-decoration: underline;
+    }
+    .error-message {
+      color: red;
+      margin-bottom: 15px;
+      text-align: center;
+      display: none;
+    }
+    .back-to-home {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #555;
+      text-decoration: none;
+    }
+    .back-to-home:hover {
+      text-decoration: underline;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid #000;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="auth-body">
+  <div class="auth-container">
+    <h1>إنشاء حساب</h1>
+    <div id="error-message" class="error-message"></div>
+    <form id="signup-form">
+      <label for="name">الاسم</label>
+      <input type="text" id="name" required>
+      
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" required>
+
+      <label for="password">كلمة المرور</label>
+      <input type="password" id="password" required>
+
+      <label for="confirm">تأكيد كلمة المرور</label>
+      <input type="password" id="confirm" required>
+
+      <button type="submit" id="signup-button">إنشاء الحساب</button>
+      
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>جاري إنشاء الحساب...</p>
+      </div>
+    </form>
+    <p class="auth-switch">لديك حساب بالفعل؟ <a href="login.html">تسجيل دخول</a></p>
+    <a href="index.html" class="back-to-home">العودة للصفحة الرئيسية</a>
+  </div>
+
+  <!-- إضافة مكتبات Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  
+  <script>
+    // تكوين Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
+      authDomain: "crossplay-store.firebaseapp.com",
+      databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
+      projectId: "crossplay-store",
+      storageBucket: "crossplay-store.appspot.com",
+      messagingSenderId: "918790495368",
+      appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
+    };
+
+    // تهيئة Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    // عناصر النموذج
+    const signupForm = document.getElementById('signup-form');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm');
+    const signupButton = document.getElementById('signup-button');
+    const errorMessage = document.getElementById('error-message');
+    const loadingElement = document.getElementById('loading');
+    
+    // معالجة إنشاء الحساب
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // التحقق من تطابق كلمات المرور
+      if (passwordInput.value !== confirmInput.value) {
+        errorMessage.textContent = 'كلمات المرور غير متطابقة';
+        errorMessage.style.display = 'block';
+        return;
+      }
+      
+      // التحقق من طول كلمة المرور
+      if (passwordInput.value.length < 6) {
+        errorMessage.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+        errorMessage.style.display = 'block';
+        return;
+      }
+      
+      // إظهار حالة التحميل
+      signupButton.disabled = true;
+      loadingElement.style.display = 'block';
+      errorMessage.style.display = 'none';
+      
+      const name = nameInput.value;
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      
+      try {
+        // إنشاء المستخدم
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        
+        // تحديث اسم العرض
+        await userCredential.user.updateProfile({
+          displayName: name
+        });
+        
+        // التحقق مما إذا كان هذا أول مستخدم (ليكون مديرًا)
+        const usersSnapshot = await db.collection('users').get();
+        const isFirstUser = usersSnapshot.size <= 1; // الأول أو الثاني (لأن المستخدم الحالي قد تم إضافته بالفعل)
+        
+        // إضافة معلومات المستخدم إلى Firestore
+        await db.collection('users').doc(userCredential.user.uid).set({
+          email: email,
+          displayName: name,
+          isAdmin: isFirstUser, // أول مستخدم يكون مديرًا
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // تم إنشاء الحساب بنجاح
+        window.location.href = 'index.html';
+      } catch (error) {
+        // عرض رسالة الخطأ
+        errorMessage.textContent = getErrorMessage(error.code);
+        errorMessage.style.display = 'block';
+        
+        // إعادة تمكين زر إنشاء الحساب
+        signupButton.disabled = false;
+        loadingElement.style.display = 'none';
+      }
+    });
+    
+    // الحصول على رسالة خطأ مناسبة باللغة العربية
+    function getErrorMessage(errorCode) {
+      switch (errorCode) {
+        case 'auth/email-already-in-use':
+          return 'البريد الإلكتروني مستخدم بالفعل';
+        case 'auth/invalid-email':
+          return 'البريد الإلكتروني غير صالح';
+        case 'auth/weak-password':
+          return 'كلمة المرور ضعيفة، يجب أن تكون 6 أحرف على الأقل';
+        case 'auth/operation-not-allowed':
+          return 'تم تعطيل إنشاء الحسابات مؤقتًا';
+        default:
+          return 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى';
+      }
+    }
+    
+    // التحقق من حالة المصادقة
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // إذا كان المستخدم مسجل الدخول بالفعل، توجيهه إلى الصفحة الرئيسية
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>
+
