@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>إضافة منتج</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="admin-page">
+
+  <h1>إضافة منتج جديد</h1>
+
+  <form id="addProductForm">
+    <label>اسم المنتج:</label>
+    <input type="text" id="productName" required />
+
+    <label>رابط الصورة:</label>
+    <input type="text" id="productImage" required />
+
+    <label>السعر (ريال):</label>
+    <input type="number" id="productPrice" required />
+
+    <label>الوصف:</label>
+    <textarea id="productDescription" required></textarea>
+
+    <label>اختر الكاتيجوري:</label>
+    <select id="productCategory" required>
+      <option value="steam">بطاقات ستيم</option>
+      <option value="ps">بطاقات بلايستيشن</option>
+      <option value="xbox">بطاقات اكس بوكس</option>
+      <option value="pubg">بطاقات ببجي</option>
+      <option value="fortnite">بطاقات فورتنايت</option>
+      <!-- أضف المزيد حسب الحاجة -->
+    </select>
+
+    <button type="submit" class="btn">إضافة المنتج</button>
+  </form>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
+      authDomain: "crossplay-store.firebaseapp.com",
+      databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
+      projectId: "crossplay-store",
+      storageBucket: "crossplay-store.appspot.com",
+      messagingSenderId: "918790495368",
+      appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("addProductForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("productName").value;
+      const image = document.getElementById("productImage").value;
+      const price = document.getElementById("productPrice").value;
+      const description = document.getElementById("productDescription").value;
+      const category = document.getElementById("productCategory").value;
+
+      try {
+        await addDoc(collection(db, "products"), {
+          name,
+          image,
+          price,
+          description,
+          category
+        });
+        alert("تمت إضافة المنتج بنجاح!");
+        form.reset();
+      } catch (error) {
+        alert("حدث خطأ أثناء الإضافة.");
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>

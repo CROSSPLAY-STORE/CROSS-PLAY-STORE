@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CROSS PLAY STORE</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- الشريط العلوي الأسود -->
+  <header class="top-bar">
+    <div class="store-info">
+      <h1>CROSS PLAY STORE</h1>
+      <p>كل شيء في مكان واحد</p>
+    </div>
+    <div class="menu-icon">&#9776;</div>
+    <div class="cart-icon">🛒</div>
+  </header>
+
+  <!-- صور متحركة -->
+  <div class="slider-container">
+    <img class="slider-image" src="img1.jpg" alt="صورة متحركة" />
+    <img class="slider-image" src="img2.jpg" alt="صورة متحركة" />
+    <img class="slider-image" src="img3.jpg" alt="صورة متحركة" />
+  </div>
+
+  <!-- مسافة بعد الصور -->
+  <div class="spacer"></div>
+
+  <!-- هنا تبدأ الكاتيجوريات -->
+  <main class="categories">
+    <!-- سيتم توليد الكاتيجوريات ديناميكيًا لاحقًا -->
+  </main>
+
+  <!-- الشريط السفلي -->
+  <footer class="footer">
+    <p>رقم الدعم الفني: 123456789</p>
+    <a href="policy.html">سياسة المتجر</a>
+  </footer>
+
+  <script>
+    // Slider functionality
+    let currentIndex = 0;
+    const images = document.querySelectorAll(".slider-image");
+    setInterval(() => {
+      images.forEach((img, index) => {
+        img.style.display = index === currentIndex ? "block" : "none";
+      });
+      currentIndex = (currentIndex + 1) % images.length;
+    }, 7000); // كل 7 ثواني
+  </script>
+</body>
+</html>

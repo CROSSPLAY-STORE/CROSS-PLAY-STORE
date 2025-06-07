@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم - CROSS PLAY STORE</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="title-section">
+      <h1>لوحة التحكم</h1>
+      <p>إدارة المتجر بكل سهولة</p>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <!-- إدارة الفئات -->
+    <h2>إضافة كاتيجوري جديد</h2>
+    <input type="text" id="categoryName" placeholder="اسم الكاتيجوري" />
+    <button onclick="addCategory()">إضافة</button>
+
+    <h2>إضافة منتج</h2>
+    <input type="text" id="productName" placeholder="اسم المنتج" />
+    <input type="text" id="productImage" placeholder="رابط صورة المنتج" />
+    <input type="text" id="productCategory" placeholder="اسم الكاتيجوري (يجب أن يكون موجود)" />
+    <button onclick="addProduct()">إضافة المنتج</button>
+
+    <h2>صور متحركة</h2>
+    <input type="text" id="sliderImage" placeholder="رابط الصورة" />
+    <button onclick="addSliderImage()">إضافة</button>
+
+    <h2>سياسة المتجر</h2>
+    <textarea id="policyText" placeholder="اكتب سياسة المتجر هنا"></textarea>
+    <button onclick="updatePolicy()">تحديث السياسة</button>
+
+    <h2>رقم الدعم الفني</h2>
+    <input type="text" id="supportNumber" placeholder="مثال: +966xxxxxxxxx" />
+    <button onclick="updateSupport()">تحديث الرقم</button>
+
+    <h2>كود خصم</h2>
+    <input type="text" id="discountCode" placeholder="كود الخصم" />
+    <input type="number" id="discountValue" placeholder="نسبة الخصم (مثال: 20%)" />
+    <button onclick="addDiscount()">إضافة الكود</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      set,
+      push,
+      remove
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
+      authDomain: "crossplay-store.firebaseapp.com",
+      databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
+      projectId: "crossplay-store",
+      storageBucket: "crossplay-store.appspot.com",
+      messagingSenderId: "918790495368",
+      appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function addCategory() {
+      const name = document.getElementById("categoryName").value;
+      if (!name) return alert("اكتب اسم الكاتيجوري");
+      set(ref(db, "categories/" + name), {
+        title: name
+      });
+      alert("تمت إضافة الكاتيجوري");
+    }
+
+    function addProduct() {
+      const name = document.getElementById("productName").value;
+      const img = document.getElementById("productImage").value;
+      const cat = document.getElementById("productCategory").value;
+      if (!name || !img || !cat) return alert("أكمل كل الحقول");
+
+      const productRef = push(ref(db, "products/" + cat));
+      set(productRef, {
+        name: name,
+        image: img
+      });
+      alert("تمت إضافة المنتج");
+    }
+
+    function addSliderImage() {
+      const img = document.getElementById("sliderImage").value;
+      const imgRef = push(ref(db, "sliders"));
+      set(imgRef, {
+        url: img
+      });
+      alert("تمت إضافة الصورة المتحركة");
+    }
+
+    function updatePolicy() {
+      const text = document.getElementById("policyText").value;
+      set(ref(db, "store/policy"), {
+        text: text
+      });
+      alert("تم تحديث سياسة المتجر");
+    }
+
+    function updateSupport() {
+      const num = document.getElementById("supportNumber").value;
+      set(ref(db, "store/support"), {
+        phone: num
+      });
+      alert("تم تحديث رقم الدعم");
+    }
+
+    function addDiscount() {
+      const code = document.getElementById("discountCode").value;
+      const val = document.getElementById("discountValue").value;
+      if (!code || !val) return alert("أدخل الكود والنسبة");
+      set(ref(db, "discounts/" + code), {
+        value: val
+      });
+      alert("تم إضافة كود الخصم");
+    }
+  </script>
+
+</body>
+</html>
