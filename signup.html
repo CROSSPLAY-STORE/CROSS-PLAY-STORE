@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+  <div class="auth-container">
+    <h1>إنشاء حساب</h1>
+    <form onsubmit="signup(event)">
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" required>
+
+      <label for="password">كلمة المرور</label>
+      <input type="password" id="password" required>
+
+      <label for="confirm">تأكيد كلمة المرور</label>
+      <input type="password" id="confirm" required>
+
+      <button type="submit">إنشاء الحساب</button>
+      <p class="auth-switch">لديك حساب بالفعل؟ <a href="login.html">تسجيل دخول</a></p>
+    </form>
+  </div>
+
+  <script>
+    function signup(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("confirm").value;
+
+      if (password !== confirm) {
+        alert("كلمة المرور غير متطابقة");
+        return;
+      }
+
+      alert("تم إنشاء الحساب بنجاح للبريد: " + email);
+      // هنا تربط مع Firebase لاحقاً
+    }
+  </script>
+</body>
+</html>

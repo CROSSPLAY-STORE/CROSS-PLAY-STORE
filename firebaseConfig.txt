@@ -1,0 +1,9 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
+  authDomain: "crossplay-store.firebaseapp.com",
+  databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
+  projectId: "crossplay-store",
+  storageBucket: "crossplay-store.appspot.com",
+  messagingSenderId: "918790495368",
+  appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
+};

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CROSS PLAY STORE</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- شريط علوي -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-text">
+          <h1>CROSS PLAY STORE</h1>
+          <p>كل شيء في مكان واحد</p>
+        </div>
+        <div class="header-icons">
+          <div class="cart-icon" onclick="window.location.href='cart.html';">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <div class="menu-toggle" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+            <div class="dropdown-menu" id="dropdown">
+              <a href="login.html">تسجيل دخول</a>
+              <a href="signup.html">إنشاء حساب</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- صور متحركة -->
+    <section class="slideshow">
+      <img id="slideshow-img" src="imgs/1.jpg" alt="صورة متحركة" />
+    </section>
+
+    <!-- الأقسام (الفئات) -->
+    <main class="categories" id="categories">
+      <!-- سيتم توليد الفئات والمنتجات ديناميكيًا من Firebase -->
+    </main>
+
+    <footer>
+      <p id="support-number">رقم الدعم الفني: 9200XXXX</p>
+      <a href="policy.html">سياسة المتجر</a>
+    </footer>
+
+    <script src="scripts/firebase.js"></script>
+    <script src="scripts/index.js"></script>
+    <script>
+      function toggleMenu() {
+        document.getElementById("dropdown").classList.toggle("show");
+      }
+    </script>
+  </body>
+</html>
