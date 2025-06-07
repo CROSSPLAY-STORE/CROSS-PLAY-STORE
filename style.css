@@ -1,0 +1,153 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+header p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.nav-toggle {
+  font-size: 24px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.nav-menu {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  background-color: #000;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.nav-menu a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+.nav-toggle:hover + .nav-menu,
+.nav-menu:hover {
+  display: block;
+}
+
+.category-section {
+  margin: 40px 20px;
+}
+
+.category-title {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.products-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.product-name {
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.product-price {
+  text-align: center;
+  color: #e91e63;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.add-to-cart-btn {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #e91e63;
+}
+
+.carousel {
+  width: 100%;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.carousel-images {
+  display: flex;
+  animation: slide 21s infinite;
+}
+
+.carousel-images img {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+@keyframes slide {
+  0%, 20% { transform: translateX(0); }
+  25%, 45% { transform: translateX(-100%); }
+  50%, 70% { transform: translateX(-200%); }
+  75%, 95% { transform: translateX(-300%); }
+  100% { transform: translateX(0); }
+}
+
+footer {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 14px;
+}
