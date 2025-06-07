@@ -1,96 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CROSS PLAY STORE</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <!-- الشريط العلوي -->
-  <header>
-    <div class="header-left">
-      <div class="logo">CROSS PLAY STORE</div>
-    </div>
-    <div class="header-center">
-      <div class="subtext">كل شيء في مكان واحد ✨</div>
-    </div>
-    <div class="header-right">
-      <div class="menu-toggle">☰</div>
-      <div class="menu-content">
-        <a href="login.html">تسجيل دخول</a>
-        <a href="signup.html">إنشاء حساب</a>
-        <a href="cart.html">سلة التسوق 🛒</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- المحتوى -->
-  <main id="main-content">
-
-    <!-- سيتم ملء الفئات والمنتجات تلقائيًا من Firebase -->
-    <!-- مثال وهمي -->
-    <section class="category-section">
-      <div class="category-title">بطاقات ستيم</div>
-      <div class="products-container" id="category-steam">
-        <!-- المنتجات هنا -->
-      </div>
-    </section>
-
-    <section class="category-section">
-      <div class="category-title">بطاقات بلايستيشن</div>
-      <div class="products-container" id="category-ps">
-        <!-- المنتجات هنا -->
-      </div>
-    </section>
-
-  </main>
-
-  <!-- أسفل الصفحة -->
-  <footer>
-    <p>للتواصل مع الدعم الفني: 9200XXXXXX</p>
-    <a href="policy.html">سياسة المتجر</a>
-  </footer>
-
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBRgEBLW3uSL6nrQNoMPwhM6yKFrNzThj4",
-      authDomain: "crossplay-store.firebaseapp.com",
-      databaseURL: "https://crossplay-store-default-rtdb.firebaseio.com",
-      projectId: "crossplay-store",
-      storageBucket: "crossplay-store.appspot.com",
-      messagingSenderId: "918790495368",
-      appId: "1:918790495368:web:830e3a8c399c9e62c3d33d"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // تحميل المنتجات
-    async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      querySnapshot.forEach((doc) => {
-        const product = doc.data();
-        const categoryId = `category-${product.category || 'uncategorized'}`;
-        const container = document.getElementById(categoryId);
-        if (container) {
-          container.innerHTML += `
-            <div class="product-card">
-              <img src="${product.image}" alt="${product.name}" />
-              <div class="product-title">${product.name}</div>
-              <button class="btn" onclick="addToCart('${doc.id}')">إضافة إلى السلة</button>
-            </div>
-          `;
-        }
-      });
-    }
-
-    loadProducts();
-  </script>
-</body>
-</html>
